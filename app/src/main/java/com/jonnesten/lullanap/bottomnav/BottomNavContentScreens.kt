@@ -169,6 +169,7 @@ fun KnowledgeScreen() {
 fun SettingsScreen() {
     val darkThemeBoolean = isSystemInDarkTheme()
     val darkModeState = remember { mutableStateOf(darkThemeBoolean) }
+    val isFahrenheit = remember { mutableStateOf(false)}
     val notificationsState = remember { mutableStateOf(true) }
     Column(
         modifier = Modifier
@@ -186,6 +187,12 @@ fun SettingsScreen() {
             onCheckedChange = { notificationsState.value = it }
         )
             Text("Notifications", modifier = Modifier .padding(start = 16.dp))
+        }
+        Row (modifier = Modifier .padding(32.dp)){ Checkbox(
+            checked = isFahrenheit.value,
+            onCheckedChange = { isFahrenheit.value = it }
+        )
+            Text("Show in Fahrenheit", modifier = Modifier .padding(start = 16.dp))
         }
 
     }
