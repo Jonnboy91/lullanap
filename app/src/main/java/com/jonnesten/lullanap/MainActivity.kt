@@ -45,6 +45,6 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     LullaNapTheme {
-        Greeting("Android")
+        Greeting("Androidd")
     }
 }
