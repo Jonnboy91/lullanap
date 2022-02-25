@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.jonnesten.lullanap.bottomnav.BottomNavigation
 import com.jonnesten.lullanap.bottomnav.NavigationGraph
+import com.jonnesten.lullanap.ui.theme.LullaNapTheme
 
 class MainActivity : ComponentActivity(), SensorEventListener {
 
@@ -81,9 +82,9 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     override fun onPause() {
         super.onPause()
         sm.unregisterListener(this)
-
+    }
 @Composable
-fun MainScreenView(SensorViewModel: SensorViewModel){
+fun MainScreenView(SensorViewModel: SensorViewModel) {
     val tempValue by SensorViewModel.value.observeAsState()
     val lightValue by SensorViewModel.value2.observeAsState()
     Box {
@@ -99,10 +100,16 @@ fun MainScreenView(SensorViewModel: SensorViewModel){
             backgroundColor = Color.Transparent,
             bottomBar = { BottomNavigation(navController = navController) }
         ) {
-          NavigationGraph(navController = navController, tempValue = tempValue, lightValue = lightValue, SensorViewModel = SensorViewModel)
+            NavigationGraph(
+                navController = navController,
+                tempValue = tempValue,
+                lightValue = lightValue,
+                SensorViewModel = SensorViewModel
+            )
         }
 
     }
+}
 
     override fun onSensorChanged(event: SensorEvent?) {
         event ?: return
