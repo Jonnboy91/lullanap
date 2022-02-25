@@ -10,10 +10,19 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.jonnesten.lullanap.bottomnav.BottomNavigation
 import com.jonnesten.lullanap.bottomnav.NavigationGraph
@@ -45,7 +54,10 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         }
 
         setContent {
-            MainScreenView(sensorViewModel)
+            LullaNapTheme {
+                MainScreenView(sensorViewModel)
+            }
+
         }
     }
 
@@ -69,6 +81,27 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     override fun onPause() {
         super.onPause()
         sm.unregisterListener(this)
+
+@Composable
+fun MainScreenView(SensorViewModel: SensorViewModel){
+    val tempValue by SensorViewModel.value.observeAsState()
+    val lightValue by SensorViewModel.value2.observeAsState()
+    Box {
+        val isLightTheme = MaterialTheme.colors.isLight
+        Image(
+            painterResource(if (isLightTheme) R.drawable.lulla_bg_light else R.drawable.lulla_bg_dark),
+            modifier = Modifier.fillMaxSize(),
+            contentDescription = "Background Image",
+            contentScale = ContentScale.FillBounds
+        )
+        val navController = rememberNavController()
+        Scaffold(
+            backgroundColor = Color.Transparent,
+            bottomBar = { BottomNavigation(navController = navController) }
+        ) {
+          NavigationGraph(navController = navController, tempValue = tempValue, lightValue = lightValue, SensorViewModel = SensorViewModel)
+        }
+
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -87,18 +120,5 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
         Log.d("onAccuracyChanged", "onAccuracyChanged ${p0?.name}: $p1")
-    }
-}
-
-@Composable
-fun MainScreenView(SensorViewModel: SensorViewModel){
-    val tempValue by SensorViewModel.value.observeAsState()
-    val lightValue by SensorViewModel.value2.observeAsState()
-
-    val navController = rememberNavController()
-    Scaffold(
-        bottomBar = { BottomNavigation(navController = navController) }
-    ) {
-        NavigationGraph(navController = navController, tempValue = tempValue, lightValue = lightValue, SensorViewModel = SensorViewModel)
     }
 }
