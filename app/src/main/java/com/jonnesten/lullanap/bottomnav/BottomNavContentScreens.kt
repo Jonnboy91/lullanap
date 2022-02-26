@@ -1,12 +1,11 @@
 package com.jonnesten.lullanap.bottomnav
 
+import android.os.Handler
+import android.util.Log
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -16,16 +15,36 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jonnesten.lullanap.R
-import kotlin.math.roundToInt
+import com.jonnesten.lullanap.SensorViewModel
+import com.jonnesten.lullanap.SoundMeter
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.KeyboardType
+
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorViewModel) {
+    var temp by remember { mutableStateOf("") }
+    var light by remember { mutableStateOf("") }
+    var addTemperature by remember { mutableStateOf(SensorViewModel.hasTempSensor.value != true) } // You can test what the alertDialog would look like, by setting this != false, so that it is showing it if you have a tempSensor (as emulators do)
+    var addLight by remember { mutableStateOf(SensorViewModel.hasLightSensor.value != true) }
+    // Can't be tested with Emulator, but this should be pretty much how we can get the audio recorded for a while and then used to get the dB.
+    /*val soundMeter = SoundMeter()
+    soundMeter.start()
+    Handler().postDelayed({
+        Log.d("SoundDB", "Calling stop in 5sec so has time to get the dB")
+        soundMeter.stop()
+    },
+     5000
+    )
+
+    var dB: Double = 20 * Math.log10(soundMeter.getAmplitude() / 32767);
+    Log.d("SoundDB", "value is $dB")*/
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -39,7 +58,11 @@ fun HomeScreen() {
             fontSize = 20.sp,
         )
         OutlinedButton(
-            onClick = {  },
+            onClick = {
+                SensorViewModel.isClicked(true)
+                Log.d("scanValues:", "${"Show the value that is $tempValue"}, ${SensorViewModel.clicked.value}")
+                Log.d("scanValues:", "${"Show the value that is $lightValue"}, ${SensorViewModel.clicked.value}")
+                },
             border = BorderStroke(1.dp, Color.Red),
             shape = CircleShape,
             colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
@@ -47,6 +70,70 @@ fun HomeScreen() {
         ){
             Text( text = "Start" )
         }
+        // TODO This AlertDialog should pop up only after clicking scanning and you would be on the scanning screen
+        if(addTemperature) {
+            AlertDialog(
+                onDismissRequest = {
+                    Log.d("addTemp", "YOU NEED TO ADD TEMPERATURE")
+                },
+                title = {
+                    Text("No temperature sensor was detected, so add the temperature of the room manually, before scanning :) ")
+                },
+                text = {
+                    TextField(
+                        value = temp,
+                        onValueChange = { temp = it },
+                        label = { Text("Label") },
+                        keyboardOptions = KeyboardOptions(keyboardType =
+                        KeyboardType.Number)
+                    )
+                },
+                buttons = {
+                    OutlinedButton(
+                        onClick = {
+                            val value = temp.toFloat()
+                            SensorViewModel.updateValue(value)
+                            addTemperature = false
+                        }
+                    ){
+                        Text( text = "Add temp" )
+                    }
+                }
+            )
+        }
+        // TODO This AlertDialog should pop up only after clicking scanning and you would be on the scanning screen
+        // TODO: Probably DELETE, since this is probably not needed and to be honest, who would know lux value anyway, so if no light sensor then that is just not available for that user.
+        if(addLight) {
+            AlertDialog(
+                onDismissRequest = {
+                    addTemperature = false
+                },
+                title = {
+                    Text("No Light sensor was detected, so add the Lux value of the room manually, before scanning :) ")
+                },
+                text = {
+                    TextField(
+                        value = light,
+                        onValueChange = { light = it },
+                        label = { Text("Label") },
+                        keyboardOptions = KeyboardOptions(keyboardType =
+                        KeyboardType.Number)
+                    )
+                },
+                buttons = {
+                    OutlinedButton(
+                        onClick = {
+                            val value = light.toFloat()
+                            SensorViewModel.updateValue(value)
+                            addLight = false
+                        }
+                    ){
+                        Text( text = "Add lux" )
+                    }
+                }
+            )
+        }
+
     }
 }
 
