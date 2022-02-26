@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">LullaNap</string>
     <string name="scan_button">Scan</string>
-    <string name="home_title">Place your phone close to the sleeping area and start scanning the environment</string>
+    <string name="home_title">Place your phone close to the sleeping area and scan the environment</string>
 </resources>
