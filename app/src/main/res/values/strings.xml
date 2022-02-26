@@ -2,4 +2,11 @@
     <string name="app_name">LullaNap</string>
     <string name="scan_button">Scan</string>
     <string name="home_title">Place your phone close to the sleeping area and scan the environment</string>
+    <string name="light">Light</string>
+    <string name="temperature">Temperature</string>
+    <string name="noise">Noise</string>
+    <string name="lux">Lux</string>
+    <string name="celsius">Celsius</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="db">dB</string>
 </resources>

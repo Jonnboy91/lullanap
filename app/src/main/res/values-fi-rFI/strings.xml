@@ -3,4 +3,11 @@
     <string name="app_name">LullaNap</string>
     <string name="scan_button">Skannaa</string>
     <string name="home_title">Aseta puhelin lähelle nukkumispaikkaa ja aloita skannaus</string>
+    <string name="light">Kirkkaus</string>
+    <string name="temperature">Lämpötila</string>
+    <string name="noise">Äänenvoimakkuus</string>
+    <string name="lux">Lux</string>
+    <string name="celsius">Celsius</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="db">dB</string>
 </resources>

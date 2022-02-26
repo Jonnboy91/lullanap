@@ -27,6 +27,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import com.jonnesten.lullanap.R
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.outlined.Face
 
 @Composable
 fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorViewModel) {
@@ -70,9 +72,15 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
             onClick = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 SensorViewModel.isClicked(true)
-                Log.d("scanValues:", "${"Show the value that is $tempValue"}, ${SensorViewModel.clicked.value}")
-                Log.d("scanValues:", "${"Show the value that is $lightValue"}, ${SensorViewModel.clicked.value}")
-                },
+                Log.d(
+                    "scanValues:",
+                    "${"Show the value that is $tempValue"}, ${SensorViewModel.clicked.value}"
+                )
+                Log.d(
+                    "scanValues:",
+                    "${"Show the value that is $lightValue"}, ${SensorViewModel.clicked.value}"
+                )
+            },
             border = BorderStroke(5.dp, MaterialTheme.colors.secondary),
             shape = CircleShape,
             colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.secondary),
@@ -80,7 +88,7 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
                 .align(Alignment.CenterHorizontally)
                 .width(200.dp)
                 .height(200.dp)
-        ){
+        ) {
             Text(
                 text = stringResource(R.string.scan_button),
                 color = MaterialTheme.colors.onPrimary,
@@ -89,7 +97,7 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
             )
         }
         // TODO This AlertDialog should pop up only after clicking scanning and you would be on the scanning screen
-        if(addTemperature) {
+        if (addTemperature) {
             AlertDialog(
                 onDismissRequest = {
                     Log.d("addTemp", "YOU NEED TO ADD TEMPERATURE")
@@ -102,8 +110,10 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
                         value = temp,
                         onValueChange = { temp = it },
                         label = { Text("Label") },
-                        keyboardOptions = KeyboardOptions(keyboardType =
-                        KeyboardType.Number)
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType =
+                            KeyboardType.Number
+                        )
                     )
                 },
                 buttons = {
@@ -113,15 +123,15 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
                             SensorViewModel.updateValue(value)
                             addTemperature = false
                         }
-                    ){
-                        Text( text = "Add temp" )
+                    ) {
+                        Text(text = "Add temp")
                     }
                 }
             )
         }
         // TODO This AlertDialog should pop up only after clicking scanning and you would be on the scanning screen
         // TODO: Probably DELETE, since this is probably not needed and to be honest, who would know lux value anyway, so if no light sensor then that is just not available for that user.
-        if(addLight) {
+        if (addLight) {
             AlertDialog(
                 onDismissRequest = {
                     addTemperature = false
@@ -134,8 +144,10 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
                         value = light,
                         onValueChange = { light = it },
                         label = { Text("Label") },
-                        keyboardOptions = KeyboardOptions(keyboardType =
-                        KeyboardType.Number)
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType =
+                            KeyboardType.Number
+                        )
                     )
                 },
                 buttons = {
@@ -145,8 +157,8 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
                             SensorViewModel.updateValue(value)
                             addLight = false
                         }
-                    ){
-                        Text( text = "Add lux" )
+                    ) {
+                        Text(text = "Add lux")
                     }
                 }
             )
@@ -156,39 +168,116 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
 }
 
 @Composable
-fun reviewIcon() {
-    Icon(
-        Icons.Filled.Favorite,
-        contentDescription = "Favorite",
-    )
+fun ReviewIcon(review: Int) {
+    for (i in 1..5) {
+        if (i <= review) {
+            Icon(
+                Icons.Outlined.Face,
+                contentDescription = "Face",
+                tint = MaterialTheme.colors.secondaryVariant,
+                modifier = Modifier.size(32.dp)
+            )
+        } else {
+            Icon(
+                Icons.Outlined.Face,
+                contentDescription = "Face",
+                tint = Color.Transparent,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+    }
 }
 
 @Composable
-fun dayDetails(review: Int, day: String) {
-    Text(
-        text = day,
-        fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Left,
-        fontSize = 20.sp
-    )
-    Text(
-        text = "Light 100 Lux",
-        textAlign = TextAlign.Left,
-        fontSize = 20.sp
-    )
-    Text(
-        text = "Temperature 20 Celsius",
-        textAlign = TextAlign.Left,
-        fontSize = 20.sp
-    )
-    Text(
-        text = "Noise 55 dB",
-        textAlign = TextAlign.Left,
-        fontSize = 20.sp
-    )
-    Row (modifier = Modifier .padding(bottom = 16.dp)){
-        for (i in 1..review){
-            reviewIcon()
+fun DayDetails(review: Int, day: String) {
+    // TODO Add correct values for measurements
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp)
+    ) {
+        Column{
+            Text(
+                text = day,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 26.sp,
+            )
+            Text(
+                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Elementum sed sollicitudin sit vulputate.",
+                fontWeight = FontWeight.Light,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 5.dp)
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 2.dp, 0.dp, 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = stringResource(R.string.light),
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp
+                )
+                Text(
+                    // TODO Add correct value before string resource
+                    text = stringResource(R.string.lux),
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 2.dp, 0.dp, 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = stringResource(R.string.temperature),
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp
+                )
+                Text(
+                    // TODO Add correct value before string resource
+                    text = stringResource(R.string.celsius),
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 2.dp, 0.dp, 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = stringResource(R.string.noise),
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp
+                )
+                Text(
+                    // TODO Add correct value before string resource
+                    text = stringResource(R.string.db),
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 15.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                ReviewIcon(review)
+            }
         }
     }
 }
@@ -198,11 +287,16 @@ fun HistoryScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .padding(0.dp, 50.dp, 0.dp, 120.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        dayDetails(3, "Last night")
-        dayDetails(5, "Wednesday")
-        dayDetails(1, "Tuesday")
+        DayDetails(3, "Last night")
+        DayDetails(5, "Wednesday")
+        DayDetails(1, "Tuesday")
+        DayDetails(3, "Monday")
+        DayDetails(2, "Sunday")
     }
 }
 
@@ -240,7 +334,7 @@ fun KnowledgeScreen() {
         Icon(
             Icons.Filled.Favorite,
             contentDescription = "Favorite",
-            modifier = Modifier .align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Text(
             text = "Ideal: 19 - 21 Celsius",
@@ -262,7 +356,7 @@ fun KnowledgeScreen() {
         Icon(
             Icons.Filled.Favorite,
             contentDescription = "Favorite",
-            modifier = Modifier .align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Text(
             text = "Ideal: 50 - 60 dB",
@@ -288,30 +382,33 @@ fun KnowledgeScreen() {
 fun SettingsScreen() {
     val darkThemeBoolean = isSystemInDarkTheme()
     val darkModeState = remember { mutableStateOf(darkThemeBoolean) }
-    val isFahrenheit = remember { mutableStateOf(false)}
+    val isFahrenheit = remember { mutableStateOf(false) }
     val notificationsState = remember { mutableStateOf(true) }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Row(modifier = Modifier .padding(32.dp)) { Checkbox(
-            checked = darkModeState.value,
-            onCheckedChange = { darkModeState.value = it }
-        )
-        Text("Dark mode", modifier = Modifier .padding(start = 16.dp))
+        Row(modifier = Modifier.padding(32.dp)) {
+            Checkbox(
+                checked = darkModeState.value,
+                onCheckedChange = { darkModeState.value = it }
+            )
+            Text("Dark mode", modifier = Modifier.padding(start = 16.dp))
         }
-        Row (modifier = Modifier .padding(32.dp)){ Checkbox(
-            checked = notificationsState.value,
-            onCheckedChange = { notificationsState.value = it }
-        )
-            Text("Notifications", modifier = Modifier .padding(start = 16.dp))
+        Row(modifier = Modifier.padding(32.dp)) {
+            Checkbox(
+                checked = notificationsState.value,
+                onCheckedChange = { notificationsState.value = it }
+            )
+            Text("Notifications", modifier = Modifier.padding(start = 16.dp))
         }
-        Row (modifier = Modifier .padding(32.dp)){ Checkbox(
-            checked = isFahrenheit.value,
-            onCheckedChange = { isFahrenheit.value = it }
-        )
-            Text("Show in Fahrenheit", modifier = Modifier .padding(start = 16.dp))
+        Row(modifier = Modifier.padding(32.dp)) {
+            Checkbox(
+                checked = isFahrenheit.value,
+                onCheckedChange = { isFahrenheit.value = it }
+            )
+            Text("Show in Fahrenheit", modifier = Modifier.padding(start = 16.dp))
         }
 
     }
