@@ -24,7 +24,11 @@ import com.jonnesten.lullanap.SoundMeter
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import com.jonnesten.lullanap.R
 
 
 @Composable
@@ -51,24 +55,41 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
             .padding(top = 120.dp)
     ) {
         Text(
-            text = "Place your phone close to the sleeping area and start scanning",
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally).width(200.dp) .padding(bottom = 100.dp),
+            text = stringResource(R.string.home_title),
+            color = MaterialTheme.colors.onPrimary,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(
+                    bottom = 100.dp,
+                    start = 20.dp,
+                    end = 20.dp,
+                ),
             textAlign = TextAlign.Center,
-            fontSize = 20.sp,
+            fontSize = 34.sp,
         )
+        val haptic = LocalHapticFeedback.current
         OutlinedButton(
             onClick = {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 SensorViewModel.isClicked(true)
                 Log.d("scanValues:", "${"Show the value that is $tempValue"}, ${SensorViewModel.clicked.value}")
                 Log.d("scanValues:", "${"Show the value that is $lightValue"}, ${SensorViewModel.clicked.value}")
                 },
-            border = BorderStroke(1.dp, Color.Red),
+            border = BorderStroke(5.dp, MaterialTheme.colors.secondary),
             shape = CircleShape,
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
-            modifier = Modifier .align(Alignment.CenterHorizontally) .width(150.dp) .height(150.dp)
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.secondary),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .width(200.dp)
+                .height(200.dp)
         ){
-            Text( text = "Start" )
+            Text(
+                text = stringResource(R.string.scan_button),
+                color = MaterialTheme.colors.onPrimary,
+                fontWeight = FontWeight.Medium,
+                fontSize = 20.sp
+            )
         }
         // TODO This AlertDialog should pop up only after clicking scanning and you would be on the scanning screen
         if(addTemperature) {
@@ -198,18 +219,24 @@ fun KnowledgeScreen() {
         Icon(
             Icons.Filled.Favorite,
             contentDescription = "Favorite",
-            modifier = Modifier .align(Alignment.CenterHorizontally) .padding(top = 32.dp),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 32.dp),
         )
         Text(
             text = "Ideal: 80-120 Lux",
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally) .padding(bottom = 16.dp),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 16.dp),
             textAlign = TextAlign.Center,
             fontSize = 20.sp
         )
         Text(
             text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor imperdiet id non lobortis amet pellentesque consequat. Tortor ut sed congue molestie et lorem. Sit malesuada orci, metus, lectus bibendum. Pretium, aliquam donec aliquam velit amet, magna eu, pellentesque viverra. Eu interdum duis aliquet tortor. Dictum ultrices id dictum a neque, tristique. Adipiscing odio tortor quis nam nibh cursus tellus nec. Etiam tempor elit sed mattis vitae feugiat. Luctus eros, fames orci egestas pretium.",
-            modifier = Modifier.align(Alignment.CenterHorizontally) .padding(bottom = 120.dp, start = 32.dp, end = 32.dp),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 120.dp, start = 32.dp, end = 32.dp),
             textAlign = TextAlign.Center,
             fontSize = 14.sp
         )
@@ -221,13 +248,17 @@ fun KnowledgeScreen() {
         Text(
             text = "Ideal: 19 - 21 Celsius",
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally) .padding(bottom = 16.dp),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 16.dp),
             textAlign = TextAlign.Center,
             fontSize = 20.sp
         )
         Text(
             text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor imperdiet id non lobortis amet pellentesque consequat. Tortor ut sed congue molestie et lorem. Sit malesuada orci, metus, lectus bibendum. Pretium, aliquam donec aliquam velit amet, magna eu, pellentesque viverra. Eu interdum duis aliquet tortor. Dictum ultrices id dictum a neque, tristique. Adipiscing odio tortor quis nam nibh cursus tellus nec. Etiam tempor elit sed mattis vitae feugiat. Luctus eros, fames orci egestas pretium.",
-            modifier = Modifier.align(Alignment.CenterHorizontally) .padding(bottom = 120.dp, start = 32.dp, end = 32.dp),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 120.dp, start = 32.dp, end = 32.dp),
             textAlign = TextAlign.Center,
             fontSize = 14.sp
         )
@@ -239,13 +270,17 @@ fun KnowledgeScreen() {
         Text(
             text = "Ideal: 50 - 60 dB",
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally) .padding(bottom = 16.dp),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 16.dp),
             textAlign = TextAlign.Center,
             fontSize = 20.sp
         )
         Text(
             text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor imperdiet id non lobortis amet pellentesque consequat. Tortor ut sed congue molestie et lorem. Sit malesuada orci, metus, lectus bibendum. Pretium, aliquam donec aliquam velit amet, magna eu, pellentesque viverra. Eu interdum duis aliquet tortor. Dictum ultrices id dictum a neque, tristique. Adipiscing odio tortor quis nam nibh cursus tellus nec. Etiam tempor elit sed mattis vitae feugiat. Luctus eros, fames orci egestas pretium.",
-            modifier = Modifier.align(Alignment.CenterHorizontally) .padding(bottom = 120.dp, start = 32.dp, end = 32.dp),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 120.dp, start = 32.dp, end = 32.dp),
             textAlign = TextAlign.Center,
             fontSize = 14.sp
         )

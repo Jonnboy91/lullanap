@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LullaNap</string>
+    <string name="scan_button">Skannaa</string>
+    <string name="home_title">Aseta puhelin lähelle nukkumispaikkaa ja aloita skannaus</string>
 </resources>
