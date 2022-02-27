@@ -200,7 +200,7 @@ fun DayDetails(review: Int, day: String) {
             .fillMaxWidth()
             .padding(20.dp)
     ) {
-        Column{
+        Column {
             Text(
                 text = day,
                 fontWeight = FontWeight.Medium,
@@ -397,6 +397,7 @@ fun KnowledgeScreen() {
 }
 
 @Composable
+// TODO Make clicking text a selector too and figure out CheckBox styling
 fun SettingsScreen() {
     val darkThemeBoolean = isSystemInDarkTheme()
     val darkModeState = remember { mutableStateOf(darkThemeBoolean) }
@@ -406,27 +407,52 @@ fun SettingsScreen() {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .padding(20.dp, 80.dp, 20.dp, 80.dp)
     ) {
-        Row(modifier = Modifier.padding(32.dp)) {
+        Row(
+            modifier = Modifier.padding(32.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Checkbox(
                 checked = darkModeState.value,
-                onCheckedChange = { darkModeState.value = it }
+                onCheckedChange = { darkModeState.value = it },
             )
-            Text("Dark mode", modifier = Modifier.padding(start = 16.dp))
+            Text(
+                text = stringResource(R.string.dark_mode),
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 26.sp,
+                modifier = Modifier
+                    .padding(start = 16.dp)
+            )
         }
         Row(modifier = Modifier.padding(32.dp)) {
             Checkbox(
                 checked = notificationsState.value,
                 onCheckedChange = { notificationsState.value = it }
             )
-            Text("Notifications", modifier = Modifier.padding(start = 16.dp))
+            Text(
+                text = stringResource(R.string.notifications),
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 26.sp,
+                modifier = Modifier
+                    .padding(start = 16.dp)
+            )
         }
         Row(modifier = Modifier.padding(32.dp)) {
             Checkbox(
                 checked = isFahrenheit.value,
                 onCheckedChange = { isFahrenheit.value = it }
             )
-            Text("Show in Fahrenheit", modifier = Modifier.padding(start = 16.dp))
+            Text(
+                text = stringResource(R.string.show_in_fahrenheit),
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 26.sp,
+                modifier = Modifier
+                    .padding(start = 16.dp)
+            )
         }
 
     }
