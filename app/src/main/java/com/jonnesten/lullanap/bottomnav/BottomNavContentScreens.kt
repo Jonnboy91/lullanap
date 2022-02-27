@@ -29,13 +29,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import com.jonnesten.lullanap.R
 import androidx.compose.material.Icon
-import androidx.compose.material.icons.outlined.Face
-import androidx.compose.material.icons.outlined.Lightbulb
-import androidx.compose.material.icons.outlined.Speaker
-import androidx.compose.material.icons.outlined.Thermostat
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import kotlinx.coroutines.delay
 
 @Composable
-fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorViewModel) {
+fun HomeScreen(
+    tempValue: Float?,
+    lightValue: Float?,
+    SensorViewModel: SensorViewModel,
+    navController: NavController
+) {
     var temp by remember { mutableStateOf("") }
     var light by remember { mutableStateOf("") }
     var addTemperature by remember { mutableStateOf(SensorViewModel.hasTempSensor.value != true) } // You can test what the alertDialog would look like, by setting this != false, so that it is showing it if you have a tempSensor (as emulators do)
@@ -84,6 +90,7 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
                     "scanValues:",
                     "${"Show the value that is $lightValue"}, ${SensorViewModel.clicked.value}"
                 )
+                navController.navigate("scanning")
             },
             border = BorderStroke(5.dp, MaterialTheme.colors.secondary),
             shape = CircleShape,
@@ -456,5 +463,182 @@ fun SettingsScreen() {
         }
 
     }
-
 }
+
+@Composable
+fun ScanningScreen(navController: NavController) {
+    val luxScanned = remember { mutableStateOf(false) }
+    val luxValue: MutableState<Int?> = remember { mutableStateOf(null) }
+    val tempScanned = remember { mutableStateOf(false) }
+    val tempValue: MutableState<Int?> = remember { mutableStateOf(null) }
+    val dbScanned = remember { mutableStateOf(false) }
+    val dbValue: MutableState<Int?> = remember { mutableStateOf(null) }
+
+    LaunchedEffect(key1 = true) {
+        delay(1000)
+        luxScanned.value = true
+        luxValue.value = 100
+    }
+
+    LaunchedEffect(key1 = true) {
+        delay(2000)
+        tempScanned.value = true
+    }
+
+    LaunchedEffect(key1 = true) {
+        delay(3000)
+        dbScanned.value = true
+        navController.navigate("results")
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp, 80.dp, 20.dp, 80.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = stringResource(R.string.scanning),
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 26.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(bottom = 15.dp)
+        )
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .padding(bottom = 15.dp)
+        ) {
+            if (!luxScanned.value) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .alpha(0.4f)
+                )
+            }
+            if (luxScanned.value && luxValue.value != null) {
+                Icon(
+                    Icons.Outlined.Done,
+                    contentDescription = "Done",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+            if (luxScanned.value && luxValue.value === null) {
+                Icon(
+                    Icons.Outlined.Cancel,
+                    contentDescription = "Error",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+            Text(
+                text = stringResource(R.string.light),
+                fontWeight = FontWeight.Light,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(start = 15.dp)
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .padding(bottom = 15.dp)
+        ) {
+            if (!tempScanned.value) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .alpha(0.4f)
+                )
+            }
+            if (tempScanned.value && tempValue.value != null) {
+                Icon(
+                    Icons.Outlined.Done,
+                    contentDescription = "Done",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+            if (tempScanned.value && tempValue.value === null) {
+                Icon(
+                    Icons.Outlined.Cancel,
+                    contentDescription = "Error",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+            Text(
+                text = stringResource(R.string.temperature),
+                fontWeight = FontWeight.Light,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(start = 15.dp)
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .padding(bottom = 15.dp)
+        ) {
+            if (!dbScanned.value) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .alpha(0.4f)
+                )
+            }
+            if (dbScanned.value && dbValue.value != null) {
+                Icon(
+                    Icons.Outlined.Done,
+                    contentDescription = "Done",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+            if (dbScanned.value && dbValue.value === null) {
+                Icon(
+                    Icons.Outlined.Cancel,
+                    contentDescription = "Error",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+            Text(
+                text = stringResource(R.string.db),
+                fontWeight = FontWeight.Light,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(start = 15.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun ResultsScreen(navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp, 80.dp, 20.dp, 80.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+
+    }
+}
+

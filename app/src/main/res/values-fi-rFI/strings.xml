@@ -19,4 +19,5 @@
     <string name="dark_mode">Tumma tila</string>
     <string name="notifications">Ilmoitukset</string>
     <string name="show_in_fahrenheit">Näytä asteet Fahrenheiteissa</string>
+    <string name="scanning">Skannataan…</string>
 </resources>

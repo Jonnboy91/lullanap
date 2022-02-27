@@ -62,7 +62,7 @@ fun NavigationGraph(
 ) {
     NavHost(navController, startDestination = BottomNavItem.Home.screen_route) {
         composable(BottomNavItem.Home.screen_route) {
-            HomeScreen(tempValue, lightValue, SensorViewModel)
+            HomeScreen(tempValue, lightValue, SensorViewModel, navController)
         }
         composable(BottomNavItem.History.screen_route) {
             HistoryScreen()
@@ -72,6 +72,12 @@ fun NavigationGraph(
         }
         composable(BottomNavItem.Settings.screen_route) {
             SettingsScreen()
+        }
+        composable(BottomNavItem.Scanning.screen_route) {
+            ScanningScreen(navController)
+        }
+        composable(BottomNavItem.Results.screen_route) {
+            ResultsScreen(navController)
         }
     }
 }
