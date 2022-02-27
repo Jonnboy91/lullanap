@@ -20,4 +20,6 @@
     <string name="notifications">Ilmoitukset</string>
     <string name="show_in_fahrenheit">Näytä asteet Fahrenheiteissa</string>
     <string name="scanning">Skannataan…</string>
+    <string name="scan_again">Skannaa uudelleen</string>
+    <string name="save_results">Tallenna tulokset</string>
 </resources>
