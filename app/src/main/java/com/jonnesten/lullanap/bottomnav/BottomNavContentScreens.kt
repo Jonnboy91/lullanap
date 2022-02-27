@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,6 +30,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.jonnesten.lullanap.R
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.outlined.Face
+import androidx.compose.material.icons.outlined.Lightbulb
+import androidx.compose.material.icons.outlined.Speaker
+import androidx.compose.material.icons.outlined.Thermostat
 
 @Composable
 fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorViewModel) {
@@ -306,74 +310,88 @@ fun KnowledgeScreen() {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .padding(20.dp, 80.dp, 20.dp, 80.dp)
     ) {
         Icon(
-            Icons.Filled.Favorite,
-            contentDescription = "Favorite",
+            Icons.Outlined.Lightbulb,
+            contentDescription = "Light",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(top = 32.dp),
+                .size(48.dp),
+            tint = MaterialTheme.colors.onPrimary,
         )
         Text(
-            text = "Ideal: 80-120 Lux",
-            fontWeight = FontWeight.Bold,
+            text = stringResource(R.string.ideal_lux),
+            fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(bottom = 16.dp),
             textAlign = TextAlign.Center,
-            fontSize = 20.sp
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 30.sp
         )
         Text(
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor imperdiet id non lobortis amet pellentesque consequat. Tortor ut sed congue molestie et lorem. Sit malesuada orci, metus, lectus bibendum. Pretium, aliquam donec aliquam velit amet, magna eu, pellentesque viverra. Eu interdum duis aliquet tortor. Dictum ultrices id dictum a neque, tristique. Adipiscing odio tortor quis nam nibh cursus tellus nec. Etiam tempor elit sed mattis vitae feugiat. Luctus eros, fames orci egestas pretium.",
+            text = stringResource(R.string.lux_desc),
+            fontWeight = FontWeight.Light,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(bottom = 120.dp, start = 32.dp, end = 32.dp),
-            textAlign = TextAlign.Center,
-            fontSize = 14.sp
+                .padding(bottom = 50.dp),
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 18.sp
         )
         Icon(
-            Icons.Filled.Favorite,
-            contentDescription = "Favorite",
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            Icons.Outlined.Thermostat,
+            contentDescription = "Temperature",
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .size(48.dp),
+            tint = MaterialTheme.colors.onPrimary,
         )
         Text(
-            text = "Ideal: 19 - 21 Celsius",
-            fontWeight = FontWeight.Bold,
+            text = stringResource(R.string.ideal_temp),
+            fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(bottom = 16.dp),
             textAlign = TextAlign.Center,
-            fontSize = 20.sp
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 30.sp
         )
         Text(
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor imperdiet id non lobortis amet pellentesque consequat. Tortor ut sed congue molestie et lorem. Sit malesuada orci, metus, lectus bibendum. Pretium, aliquam donec aliquam velit amet, magna eu, pellentesque viverra. Eu interdum duis aliquet tortor. Dictum ultrices id dictum a neque, tristique. Adipiscing odio tortor quis nam nibh cursus tellus nec. Etiam tempor elit sed mattis vitae feugiat. Luctus eros, fames orci egestas pretium.",
+            text = stringResource(R.string.temp_desc),
+            fontWeight = FontWeight.Light,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(bottom = 120.dp, start = 32.dp, end = 32.dp),
-            textAlign = TextAlign.Center,
-            fontSize = 14.sp
+                .padding(bottom = 50.dp),
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 18.sp
         )
         Icon(
-            Icons.Filled.Favorite,
-            contentDescription = "Favorite",
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            Icons.Outlined.Speaker,
+            contentDescription = "Noise",
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .size(48.dp),
+            tint = MaterialTheme.colors.onPrimary,
         )
         Text(
-            text = "Ideal: 50 - 60 dB",
-            fontWeight = FontWeight.Bold,
+            text = stringResource(R.string.ideal_db),
+            fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(bottom = 16.dp),
             textAlign = TextAlign.Center,
-            fontSize = 20.sp
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 30.sp
         )
         Text(
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor imperdiet id non lobortis amet pellentesque consequat. Tortor ut sed congue molestie et lorem. Sit malesuada orci, metus, lectus bibendum. Pretium, aliquam donec aliquam velit amet, magna eu, pellentesque viverra. Eu interdum duis aliquet tortor. Dictum ultrices id dictum a neque, tristique. Adipiscing odio tortor quis nam nibh cursus tellus nec. Etiam tempor elit sed mattis vitae feugiat. Luctus eros, fames orci egestas pretium.",
+            text = stringResource(R.string.db_desc),
+            fontWeight = FontWeight.Light,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(bottom = 120.dp, start = 32.dp, end = 32.dp),
-            textAlign = TextAlign.Center,
-            fontSize = 14.sp
+                .padding(bottom = 50.dp),
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 18.sp
         )
     }
 }

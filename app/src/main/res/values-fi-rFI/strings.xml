@@ -10,4 +10,10 @@
     <string name="celsius">Celsius</string>
     <string name="fahrenheit">Fahrenheit</string>
     <string name="db">dB</string>
+    <string name="ideal_lux">Ideaali: 80–120 Lux</string>
+    <string name="ideal_temp">Ideaali: 19–21 Celsius (66–69 Fahrenheit)</string>
+    <string name="ideal_db">Ideaali: 50–60 dB</string>
+    <string name="lux_desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor imperdiet id non lobortis amet pellentesque consequat. Tortor ut sed congue molestie et lorem. Sit malesuada orci, metus, lectus bibendum. Pretium, aliquam donec aliquam velit amet, magna eu, pellentesque viverra. Eu interdum duis aliquet tortor. Dictum ultrices id dictum a neque, tristique. Adipiscing odio tortor quis nam nibh cursus tellus nec. Etiam tempor elit sed mattis vitae feugiat. Luctus eros, fames orci egestas pretium.</string>
+    <string name="temp_desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor imperdiet id non lobortis amet pellentesque consequat. Tortor ut sed congue molestie et lorem. Sit malesuada orci, metus, lectus bibendum. Pretium, aliquam donec aliquam velit amet, magna eu, pellentesque viverra. Eu interdum duis aliquet tortor. Dictum ultrices id dictum a neque, tristique. Adipiscing odio tortor quis nam nibh cursus tellus nec. Etiam tempor elit sed mattis vitae feugiat. Luctus eros, fames orci egestas pretium.</string>
+    <string name="db_desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor imperdiet id non lobortis amet pellentesque consequat. Tortor ut sed congue molestie et lorem. Sit malesuada orci, metus, lectus bibendum. Pretium, aliquam donec aliquam velit amet, magna eu, pellentesque viverra. Eu interdum duis aliquet tortor. Dictum ultrices id dictum a neque, tristique. Adipiscing odio tortor quis nam nibh cursus tellus nec. Etiam tempor elit sed mattis vitae feugiat. Luctus eros, fames orci egestas pretium.</string>
 </resources>
