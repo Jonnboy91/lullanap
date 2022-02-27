@@ -200,7 +200,7 @@ fun ReviewIcon(review: Int) {
 }
 
 @Composable
-fun DayDetails(review: Int?, day: String) {
+fun DayDetails(review: Int, day: String) {
     // TODO Add correct values for measurements
     Box(
         modifier = Modifier
@@ -281,15 +281,13 @@ fun DayDetails(review: Int?, day: String) {
                     fontSize = 18.sp
                 )
             }
-            if (review != null) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 15.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    ReviewIcon(review)
-                }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 15.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                ReviewIcon(review)
             }
         }
     }
@@ -640,39 +638,7 @@ fun ResultsScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        DayDetails(null, "Today")
-        Spacer(modifier = Modifier.padding(10.dp))
-        Button(
-            onClick = { navController.navigate("history") },
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondaryVariant),
-            modifier = Modifier
-                .width(260.dp)
-                .height(40.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.save_results),
-                textAlign = TextAlign.Center,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Light,
-                color = MaterialTheme.colors.onSurface
-            )
-        }
-        Spacer(modifier = Modifier.padding(10.dp))
-        Button(
-            onClick = { navController.navigate("scanning") },
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondaryVariant),
-            modifier = Modifier
-                .width(260.dp)
-                .height(40.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.scan_again),
-                textAlign = TextAlign.Center,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Light,
-                color = MaterialTheme.colors.onSurface
-            )
-        }
+
     }
 }
 
