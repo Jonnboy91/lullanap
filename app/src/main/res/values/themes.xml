@@ -2,6 +2,10 @@
 <resources>
 
     <style name="Theme.LullaNap" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+    <style name="Splash" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 </resources>

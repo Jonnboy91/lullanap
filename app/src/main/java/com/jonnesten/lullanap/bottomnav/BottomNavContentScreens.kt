@@ -8,10 +8,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,14 +20,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jonnesten.lullanap.SensorViewModel
 import com.jonnesten.lullanap.SoundMeter
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-
+import com.jonnesten.lullanap.R
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import kotlinx.coroutines.delay
 
 @Composable
-fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorViewModel) {
+fun HomeScreen(
+    tempValue: Float?,
+    lightValue: Float?,
+    SensorViewModel: SensorViewModel,
+    navController: NavController
+) {
     var temp by remember { mutableStateOf("") }
     var light by remember { mutableStateOf("") }
     var addTemperature by remember { mutableStateOf(SensorViewModel.hasTempSensor.value != true) } // You can test what the alertDialog would look like, by setting this != false, so that it is showing it if you have a tempSensor (as emulators do)
@@ -51,27 +64,51 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
             .padding(top = 120.dp)
     ) {
         Text(
-            text = "Place your phone close to the sleeping area and start scanning",
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally).width(200.dp) .padding(bottom = 100.dp),
+            text = stringResource(R.string.home_title),
+            color = MaterialTheme.colors.onPrimary,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(
+                    bottom = 100.dp,
+                    start = 20.dp,
+                    end = 20.dp,
+                ),
             textAlign = TextAlign.Center,
-            fontSize = 20.sp,
+            fontSize = 34.sp,
         )
+        val haptic = LocalHapticFeedback.current
         OutlinedButton(
             onClick = {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 SensorViewModel.isClicked(true)
-                Log.d("scanValues:", "${"Show the value that is $tempValue"}, ${SensorViewModel.clicked.value}")
-                Log.d("scanValues:", "${"Show the value that is $lightValue"}, ${SensorViewModel.clicked.value}")
-                },
-            border = BorderStroke(1.dp, Color.Red),
+                Log.d(
+                    "scanValues:",
+                    "${"Show the value that is $tempValue"}, ${SensorViewModel.clicked.value}"
+                )
+                Log.d(
+                    "scanValues:",
+                    "${"Show the value that is $lightValue"}, ${SensorViewModel.clicked.value}"
+                )
+                navController.navigate("scanning")
+            },
+            border = BorderStroke(5.dp, MaterialTheme.colors.secondary),
             shape = CircleShape,
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
-            modifier = Modifier .align(Alignment.CenterHorizontally) .width(150.dp) .height(150.dp)
-        ){
-            Text( text = "Start" )
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.secondary),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .width(200.dp)
+                .height(200.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.scan_button),
+                color = MaterialTheme.colors.onPrimary,
+                fontWeight = FontWeight.Medium,
+                fontSize = 20.sp
+            )
         }
         // TODO This AlertDialog should pop up only after clicking scanning and you would be on the scanning screen
-        if(addTemperature) {
+        if (addTemperature) {
             AlertDialog(
                 onDismissRequest = {
                     Log.d("addTemp", "YOU NEED TO ADD TEMPERATURE")
@@ -84,8 +121,10 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
                         value = temp,
                         onValueChange = { temp = it },
                         label = { Text("Label") },
-                        keyboardOptions = KeyboardOptions(keyboardType =
-                        KeyboardType.Number)
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType =
+                            KeyboardType.Number
+                        )
                     )
                 },
                 buttons = {
@@ -95,15 +134,15 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
                             SensorViewModel.updateValue(value)
                             addTemperature = false
                         }
-                    ){
-                        Text( text = "Add temp" )
+                    ) {
+                        Text(text = "Add temp")
                     }
                 }
             )
         }
         // TODO This AlertDialog should pop up only after clicking scanning and you would be on the scanning screen
         // TODO: Probably DELETE, since this is probably not needed and to be honest, who would know lux value anyway, so if no light sensor then that is just not available for that user.
-        if(addLight) {
+        if (addLight) {
             AlertDialog(
                 onDismissRequest = {
                     addTemperature = false
@@ -116,8 +155,10 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
                         value = light,
                         onValueChange = { light = it },
                         label = { Text("Label") },
-                        keyboardOptions = KeyboardOptions(keyboardType =
-                        KeyboardType.Number)
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType =
+                            KeyboardType.Number
+                        )
                     )
                 },
                 buttons = {
@@ -127,8 +168,8 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
                             SensorViewModel.updateValue(value)
                             addLight = false
                         }
-                    ){
-                        Text( text = "Add lux" )
+                    ) {
+                        Text(text = "Add lux")
                     }
                 }
             )
@@ -138,39 +179,116 @@ fun HomeScreen(tempValue: Float?, lightValue: Float?, SensorViewModel: SensorVie
 }
 
 @Composable
-fun reviewIcon() {
-    Icon(
-        Icons.Filled.Favorite,
-        contentDescription = "Favorite",
-    )
+fun ReviewIcon(review: Int) {
+    for (i in 1..5) {
+        if (i <= review) {
+            Icon(
+                Icons.Outlined.Face,
+                contentDescription = "Face",
+                tint = MaterialTheme.colors.secondaryVariant,
+                modifier = Modifier.size(32.dp)
+            )
+        } else {
+            Icon(
+                Icons.Outlined.Face,
+                contentDescription = "Face",
+                tint = Color.Transparent,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+    }
 }
 
 @Composable
-fun dayDetails(review: Int, day: String) {
-    Text(
-        text = day,
-        fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Left,
-        fontSize = 20.sp
-    )
-    Text(
-        text = "Light 100 Lux",
-        textAlign = TextAlign.Left,
-        fontSize = 20.sp
-    )
-    Text(
-        text = "Temperature 20 Celsius",
-        textAlign = TextAlign.Left,
-        fontSize = 20.sp
-    )
-    Text(
-        text = "Noise 55 dB",
-        textAlign = TextAlign.Left,
-        fontSize = 20.sp
-    )
-    Row (modifier = Modifier .padding(bottom = 16.dp)){
-        for (i in 1..review){
-            reviewIcon()
+fun DayDetails(review: Int, day: String) {
+    // TODO Add correct values for measurements
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp)
+    ) {
+        Column {
+            Text(
+                text = day,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 26.sp,
+            )
+            Text(
+                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Elementum sed sollicitudin sit vulputate.",
+                fontWeight = FontWeight.Light,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 5.dp)
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 2.dp, 0.dp, 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = stringResource(R.string.light),
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp
+                )
+                Text(
+                    // TODO Add correct value before string resource
+                    text = stringResource(R.string.lux),
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 2.dp, 0.dp, 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = stringResource(R.string.temperature),
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp
+                )
+                Text(
+                    // TODO Add correct value before string resource
+                    text = stringResource(R.string.celsius),
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 2.dp, 0.dp, 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = stringResource(R.string.noise),
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp
+                )
+                Text(
+                    // TODO Add correct value before string resource
+                    text = stringResource(R.string.db),
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 15.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                ReviewIcon(review)
+            }
         }
     }
 }
@@ -180,11 +298,16 @@ fun HistoryScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .padding(0.dp, 50.dp, 0.dp, 120.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        dayDetails(3, "Last night")
-        dayDetails(5, "Wednesday")
-        dayDetails(1, "Tuesday")
+        DayDetails(3, "Last night")
+        DayDetails(5, "Wednesday")
+        DayDetails(1, "Tuesday")
+        DayDetails(3, "Monday")
+        DayDetails(2, "Sunday")
     }
 }
 
@@ -194,94 +317,328 @@ fun KnowledgeScreen() {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .padding(20.dp, 80.dp, 20.dp, 80.dp)
     ) {
         Icon(
-            Icons.Filled.Favorite,
-            contentDescription = "Favorite",
-            modifier = Modifier .align(Alignment.CenterHorizontally) .padding(top = 32.dp),
+            Icons.Outlined.Lightbulb,
+            contentDescription = "Light",
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .size(48.dp),
+            tint = MaterialTheme.colors.onPrimary,
         )
         Text(
-            text = "Ideal: 80-120 Lux",
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally) .padding(bottom = 16.dp),
+            text = stringResource(R.string.ideal_lux),
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 16.dp),
             textAlign = TextAlign.Center,
-            fontSize = 20.sp
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 30.sp
         )
         Text(
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor imperdiet id non lobortis amet pellentesque consequat. Tortor ut sed congue molestie et lorem. Sit malesuada orci, metus, lectus bibendum. Pretium, aliquam donec aliquam velit amet, magna eu, pellentesque viverra. Eu interdum duis aliquet tortor. Dictum ultrices id dictum a neque, tristique. Adipiscing odio tortor quis nam nibh cursus tellus nec. Etiam tempor elit sed mattis vitae feugiat. Luctus eros, fames orci egestas pretium.",
-            modifier = Modifier.align(Alignment.CenterHorizontally) .padding(bottom = 120.dp, start = 32.dp, end = 32.dp),
-            textAlign = TextAlign.Center,
-            fontSize = 14.sp
+            text = stringResource(R.string.lux_desc),
+            fontWeight = FontWeight.Light,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 50.dp),
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 18.sp
         )
         Icon(
-            Icons.Filled.Favorite,
-            contentDescription = "Favorite",
-            modifier = Modifier .align(Alignment.CenterHorizontally)
+            Icons.Outlined.Thermostat,
+            contentDescription = "Temperature",
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .size(48.dp),
+            tint = MaterialTheme.colors.onPrimary,
         )
         Text(
-            text = "Ideal: 19 - 21 Celsius",
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally) .padding(bottom = 16.dp),
+            text = stringResource(R.string.ideal_temp),
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 16.dp),
             textAlign = TextAlign.Center,
-            fontSize = 20.sp
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 30.sp
         )
         Text(
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor imperdiet id non lobortis amet pellentesque consequat. Tortor ut sed congue molestie et lorem. Sit malesuada orci, metus, lectus bibendum. Pretium, aliquam donec aliquam velit amet, magna eu, pellentesque viverra. Eu interdum duis aliquet tortor. Dictum ultrices id dictum a neque, tristique. Adipiscing odio tortor quis nam nibh cursus tellus nec. Etiam tempor elit sed mattis vitae feugiat. Luctus eros, fames orci egestas pretium.",
-            modifier = Modifier.align(Alignment.CenterHorizontally) .padding(bottom = 120.dp, start = 32.dp, end = 32.dp),
-            textAlign = TextAlign.Center,
-            fontSize = 14.sp
+            text = stringResource(R.string.temp_desc),
+            fontWeight = FontWeight.Light,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 50.dp),
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 18.sp
         )
         Icon(
-            Icons.Filled.Favorite,
-            contentDescription = "Favorite",
-            modifier = Modifier .align(Alignment.CenterHorizontally)
+            Icons.Outlined.Speaker,
+            contentDescription = "Noise",
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .size(48.dp),
+            tint = MaterialTheme.colors.onPrimary,
         )
         Text(
-            text = "Ideal: 50 - 60 dB",
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally) .padding(bottom = 16.dp),
+            text = stringResource(R.string.ideal_db),
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 16.dp),
             textAlign = TextAlign.Center,
-            fontSize = 20.sp
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 30.sp
         )
         Text(
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam porttitor imperdiet id non lobortis amet pellentesque consequat. Tortor ut sed congue molestie et lorem. Sit malesuada orci, metus, lectus bibendum. Pretium, aliquam donec aliquam velit amet, magna eu, pellentesque viverra. Eu interdum duis aliquet tortor. Dictum ultrices id dictum a neque, tristique. Adipiscing odio tortor quis nam nibh cursus tellus nec. Etiam tempor elit sed mattis vitae feugiat. Luctus eros, fames orci egestas pretium.",
-            modifier = Modifier.align(Alignment.CenterHorizontally) .padding(bottom = 120.dp, start = 32.dp, end = 32.dp),
-            textAlign = TextAlign.Center,
-            fontSize = 14.sp
+            text = stringResource(R.string.db_desc),
+            fontWeight = FontWeight.Light,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 50.dp),
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 18.sp
         )
     }
 }
 
 @Composable
+// TODO Make clicking text a selector too and figure out CheckBox styling
 fun SettingsScreen() {
     val darkThemeBoolean = isSystemInDarkTheme()
     val darkModeState = remember { mutableStateOf(darkThemeBoolean) }
-    val isFahrenheit = remember { mutableStateOf(false)}
+    val isFahrenheit = remember { mutableStateOf(false) }
     val notificationsState = remember { mutableStateOf(true) }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .padding(20.dp, 80.dp, 20.dp, 80.dp)
     ) {
-        Row(modifier = Modifier .padding(32.dp)) { Checkbox(
-            checked = darkModeState.value,
-            onCheckedChange = { darkModeState.value = it }
-        )
-        Text("Dark mode", modifier = Modifier .padding(start = 16.dp))
+        Row(
+            modifier = Modifier.padding(32.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Checkbox(
+                checked = darkModeState.value,
+                onCheckedChange = { darkModeState.value = it },
+            )
+            Text(
+                text = stringResource(R.string.dark_mode),
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 26.sp,
+                modifier = Modifier
+                    .padding(start = 16.dp)
+            )
         }
-        Row (modifier = Modifier .padding(32.dp)){ Checkbox(
-            checked = notificationsState.value,
-            onCheckedChange = { notificationsState.value = it }
-        )
-            Text("Notifications", modifier = Modifier .padding(start = 16.dp))
+        Row(modifier = Modifier.padding(32.dp)) {
+            Checkbox(
+                checked = notificationsState.value,
+                onCheckedChange = { notificationsState.value = it }
+            )
+            Text(
+                text = stringResource(R.string.notifications),
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 26.sp,
+                modifier = Modifier
+                    .padding(start = 16.dp)
+            )
         }
-        Row (modifier = Modifier .padding(32.dp)){ Checkbox(
-            checked = isFahrenheit.value,
-            onCheckedChange = { isFahrenheit.value = it }
-        )
-            Text("Show in Fahrenheit", modifier = Modifier .padding(start = 16.dp))
+        Row(modifier = Modifier.padding(32.dp)) {
+            Checkbox(
+                checked = isFahrenheit.value,
+                onCheckedChange = { isFahrenheit.value = it }
+            )
+            Text(
+                text = stringResource(R.string.show_in_fahrenheit),
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 26.sp,
+                modifier = Modifier
+                    .padding(start = 16.dp)
+            )
         }
 
     }
-
 }
+
+@Composable
+fun ScanningScreen(navController: NavController) {
+    val luxScanned = remember { mutableStateOf(false) }
+    val luxValue: MutableState<Int?> = remember { mutableStateOf(null) }
+    val tempScanned = remember { mutableStateOf(false) }
+    val tempValue: MutableState<Int?> = remember { mutableStateOf(null) }
+    val dbScanned = remember { mutableStateOf(false) }
+    val dbValue: MutableState<Int?> = remember { mutableStateOf(null) }
+
+    LaunchedEffect(key1 = true) {
+        delay(1000)
+        luxScanned.value = true
+        luxValue.value = 100
+    }
+
+    LaunchedEffect(key1 = true) {
+        delay(2000)
+        tempScanned.value = true
+    }
+
+    LaunchedEffect(key1 = true) {
+        delay(3000)
+        dbScanned.value = true
+        navController.navigate("results")
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp, 80.dp, 20.dp, 80.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = stringResource(R.string.scanning),
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = 26.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(bottom = 15.dp)
+        )
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .padding(bottom = 15.dp)
+        ) {
+            if (!luxScanned.value) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .alpha(0.4f)
+                )
+            }
+            if (luxScanned.value && luxValue.value != null) {
+                Icon(
+                    Icons.Outlined.Done,
+                    contentDescription = "Done",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+            if (luxScanned.value && luxValue.value === null) {
+                Icon(
+                    Icons.Outlined.Cancel,
+                    contentDescription = "Error",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+            Text(
+                text = stringResource(R.string.light),
+                fontWeight = FontWeight.Light,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(start = 15.dp)
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .padding(bottom = 15.dp)
+        ) {
+            if (!tempScanned.value) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .alpha(0.4f)
+                )
+            }
+            if (tempScanned.value && tempValue.value != null) {
+                Icon(
+                    Icons.Outlined.Done,
+                    contentDescription = "Done",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+            if (tempScanned.value && tempValue.value === null) {
+                Icon(
+                    Icons.Outlined.Cancel,
+                    contentDescription = "Error",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+            Text(
+                text = stringResource(R.string.temperature),
+                fontWeight = FontWeight.Light,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(start = 15.dp)
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .padding(bottom = 15.dp)
+        ) {
+            if (!dbScanned.value) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .alpha(0.4f)
+                )
+            }
+            if (dbScanned.value && dbValue.value != null) {
+                Icon(
+                    Icons.Outlined.Done,
+                    contentDescription = "Done",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+            if (dbScanned.value && dbValue.value === null) {
+                Icon(
+                    Icons.Outlined.Cancel,
+                    contentDescription = "Error",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colors.secondaryVariant,
+                )
+            }
+            Text(
+                text = stringResource(R.string.db),
+                fontWeight = FontWeight.Light,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(start = 15.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun ResultsScreen(navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp, 80.dp, 20.dp, 80.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+
+    }
+}
+

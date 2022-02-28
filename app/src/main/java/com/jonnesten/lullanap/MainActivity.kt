@@ -12,21 +12,26 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.jonnesten.lullanap.bottomnav.BottomNavigation
 import com.jonnesten.lullanap.bottomnav.NavigationGraph
 import com.jonnesten.lullanap.ui.theme.LullaNapTheme
+
 
 class MainActivity : ComponentActivity(), SensorEventListener {
 
@@ -39,6 +44,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         sm = getSystemService(Context.SENSOR_SERVICE) as
                 SensorManager
         sTemp = sm.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
@@ -53,7 +59,6 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         } else {
             sensorViewModel.updateLightSensor(false)
         }
-
         setContent {
             LullaNapTheme {
                 MainScreenView(sensorViewModel)
@@ -98,7 +103,13 @@ fun MainScreenView(SensorViewModel: SensorViewModel) {
         val navController = rememberNavController()
         Scaffold(
             backgroundColor = Color.Transparent,
-            bottomBar = { BottomNavigation(navController = navController) }
+            bottomBar = {
+                BottomNavigation(navController = navController)
+                // TODO Get current height of a navigation bar and use it as Spacer bottom padding
+                val navHeight = applicationContext.resources.getIdentifier("navigation_bar_height", "dimen", "android")
+                Log.d("test", navHeight.toString())
+                Spacer(Modifier.padding(0.dp, 50.dp))
+            }
         ) {
             NavigationGraph(
                 navController = navController,
