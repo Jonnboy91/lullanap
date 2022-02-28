@@ -1,11 +1,10 @@
 package com.jonnesten.lullanap
 
 import android.media.MediaRecorder
-import android.util.Log
 import java.io.IOException
 
 
-class SoundMeter {
+class SoundMeter() {
     private val EMA_FILTER = 0.6
 
     private var mRecorder: MediaRecorder? = null

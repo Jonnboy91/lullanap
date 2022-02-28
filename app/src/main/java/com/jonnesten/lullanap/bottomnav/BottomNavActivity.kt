@@ -1,5 +1,6 @@
 package com.jonnesten.lullanap.bottomnav
 
+import android.content.SharedPreferences
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.jonnesten.lullanap.SensorViewModel
+import com.jonnesten.lullanap.screens.*
 
 @Composable
 fun BottomNavigation(navController: NavController) {
@@ -56,28 +58,27 @@ fun BottomNavigation(navController: NavController) {
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
-    tempValue: Float?,
-    lightValue: Float?,
-    SensorViewModel: SensorViewModel
+    sensorViewModel: SensorViewModel,
+    sharedPreferences: SharedPreferences
 ) {
     NavHost(navController, startDestination = BottomNavItem.Home.screen_route) {
         composable(BottomNavItem.Home.screen_route) {
-            HomeScreen(tempValue, lightValue, SensorViewModel, navController)
+            HomeScreen(navController)
         }
         composable(BottomNavItem.History.screen_route) {
-            HistoryScreen()
+            HistoryScreen(sharedPreferences)
         }
         composable(BottomNavItem.Knowledge.screen_route) {
             KnowledgeScreen()
         }
         composable(BottomNavItem.Settings.screen_route) {
-            SettingsScreen()
+            SettingsScreen(sharedPreferences)
         }
         composable(BottomNavItem.Scanning.screen_route) {
-            ScanningScreen(navController)
+            ScanningScreen(sensorViewModel, navController)
         }
         composable(BottomNavItem.Results.screen_route) {
-            ResultsScreen(navController)
+            ResultsScreen(navController, sharedPreferences, sensorViewModel)
         }
     }
 }
