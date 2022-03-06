@@ -23,10 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.gson.Gson
-import com.jonnesten.lullanap.MainActivity
+import com.jonnesten.lullanap.*
 import com.jonnesten.lullanap.R
-import com.jonnesten.lullanap.SavedData
-import com.jonnesten.lullanap.SensorViewModel
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
@@ -49,18 +47,19 @@ fun ScanningScreen(
     val tempScanValue by sensorViewModel.temp.observeAsState()
     val lightScanValue by sensorViewModel.lux.observeAsState()
 
-    // Can't be tested with Emulator, but this should be pretty much how we can get the audio recorded for a while and then used to get the dB.
+    // For some reason the soundMeter.start is not working, it recognises mediarecorder/etc, but when calling the start method within the SoundMeters mediarecorder, it crashes.
     /*val soundMeter = SoundMeter()
     soundMeter.start()
     Handler().postDelayed({
         Log.d("SoundDB", "Calling stop in 5sec so has time to get the dB")
         soundMeter.stop()
     },
-     5000
+     3000
     )
 
-    var dB: Double = 20 * Math.log10(soundMeter.getAmplitude() / 32767);
-    Log.d("SoundDB", "value is $dB")*/
+    dB = 20 * Math.log10(soundMeter.getAmplitude() / 32767).toFloat();
+    Log.d("SoundDB", "value is $dB")
+    */
 
     if(lightScanValue != null && !luxScanned.value){
         Handler(Looper.getMainLooper()).postDelayed({

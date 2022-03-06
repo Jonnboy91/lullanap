@@ -74,14 +74,14 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         super.onResume()
         if (sTemp == null) {
             // This will give a toast message to the user if there is no sensor in the device
-            Toast.makeText(this, "No TYPE_AMBIENT_TEMPERATURE sensor detected on this device", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No Temperature sensor detected on this device", Toast.LENGTH_SHORT).show()
         } else {
             sm.registerListener(this, sTemp, SensorManager.SENSOR_DELAY_UI)
         }
 
         if (sLight == null) {
             // This will give a toast message to the user if there is no sensor in the device
-            Toast.makeText(this, "No TYPE_LIGHT sensor detected on this device", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No Light sensor detected on this device", Toast.LENGTH_SHORT).show()
         } else {
             sm.registerListener(this, sLight, SensorManager.SENSOR_DELAY_UI)
         }

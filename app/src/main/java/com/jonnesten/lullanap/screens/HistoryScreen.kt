@@ -27,6 +27,8 @@ import com.jonnesten.lullanap.SavedData
 fun HistoryScreen(sharedPreferences: SharedPreferences) {
     val gson = Gson()
     val allEntries: Map<String, *> = sharedPreferences.all
+    val allEntriesDescending = allEntries.toSortedMap()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,7 +37,7 @@ fun HistoryScreen(sharedPreferences: SharedPreferences) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        for ((key, value) in allEntries) {
+        for ((key, value) in allEntriesDescending) {
             Log.d("SAVED", "key: $key, value: $value")
             if(key != "theme" && key != "notifications" && key != "showInFah"){
                 Log.d("SAVED", "I GOT HERE WITH $key")
