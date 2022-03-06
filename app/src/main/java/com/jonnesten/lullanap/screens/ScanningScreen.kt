@@ -37,7 +37,7 @@ fun ScanningScreen(
 ) {
     var dB: Float? by remember { mutableStateOf(null) }
     var addTemperature by remember { mutableStateOf(false) }
-        val luxScanned = remember { mutableStateOf(false) }
+    val luxScanned = remember { mutableStateOf(false) }
     val luxValue: MutableState<Float?> = remember { mutableStateOf(null) }
     val tempScanned = remember { mutableStateOf(false) }
     val tempValue: MutableState<Float?> = remember { mutableStateOf(null) }
@@ -254,7 +254,7 @@ fun ScanningScreen(
                     TextField(
                         value = "",
                         onValueChange = { tempValue.value = it.toFloat() },
-                        label = { Text("Label", color = MaterialTheme.colors.onPrimary) },
+                        label = { Text("Temperature", color = MaterialTheme.colors.onPrimary) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType =
                             KeyboardType.Number

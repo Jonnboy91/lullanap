@@ -105,7 +105,7 @@ fun ResultsScreen(navController: NavController, sharedPreferences: SharedPrefere
 
         OutlinedButton(
             onClick = {
-                val data = SavedData(date = date, day = day, lux = lux, temp = temp, noise = dB, review = null)
+                val data = SavedData(date = Date(), day = day, lux = lux, temp = temp, noise = dB, review = null, comment = null)
                 val gson = Gson()
                 val dataJson = gson.toJson(data)
                 editor.putString(date, dataJson)

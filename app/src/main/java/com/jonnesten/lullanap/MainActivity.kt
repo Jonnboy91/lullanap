@@ -7,29 +7,34 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.jonnesten.lullanap.bottomnav.BottomNavigation
 import com.jonnesten.lullanap.bottomnav.NavigationGraph
+import com.jonnesten.lullanap.screens.DayDetails
 import com.jonnesten.lullanap.ui.theme.LullaNapTheme
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity : ComponentActivity(), SensorEventListener {
@@ -45,6 +50,11 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+
+
+
+
         sm = getSystemService(Context.SENSOR_SERVICE) as
                 SensorManager
         sTemp = sm.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
@@ -68,6 +78,10 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             }
 
         }
+    }
+
+    private fun isYesterday(date: Date): Boolean {
+        return DateUtils.isToday(date.time + DateUtils.DAY_IN_MILLIS);
     }
 
     override fun onResume() {
@@ -112,6 +126,27 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
     @Composable
     fun MainScreenView() {
+
+        var addReview by remember { mutableStateOf(false) }
+        val comment: MutableState<String?> = remember { mutableStateOf(null) }
+        val review: MutableState<Int?> = remember { mutableStateOf(null) }
+        val editor = sharedPreferences.edit()
+        lateinit var yesterdayData: SavedData
+        val allEntries: Map<String, *> = sharedPreferences.all
+        val gson = Gson()
+
+        val filteredEntries = allEntries.filter { it.key != "theme" && it.key != "notifications" && it.key != "showInFah" }.toSortedMap()
+
+        val jsonData = sharedPreferences.getString(filteredEntries.firstKey(), null)
+        val type = object : TypeToken<SavedData>() {}.type
+        if(jsonData != null) {
+            yesterdayData = gson.fromJson(jsonData, type);
+            if(!isYesterday(date = yesterdayData.date) && yesterdayData.review == null){
+                Log.d("ASK FOR REVIEW", "NEED TO REVIEW")
+                addReview = true;
+            }
+        }
+
         Box {
             val isLightTheme = MaterialTheme.colors.isLight
             Image(
@@ -137,7 +172,62 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     sharedPreferences = sharedPreferences
                 )
             }
+            if (addReview) {
+                AlertDialog(
+                    onDismissRequest = {
+                        Log.d("addReview", "YOU NEED TO ADD REVIEW")
+                        Toast.makeText(applicationContext, "Add review and press save review", Toast.LENGTH_SHORT).show()
+                    },
+                    title = {
+                        Text("Add yesterdays review (1-5) and a comment if you want to", color = MaterialTheme.colors.onPrimary)
+                    },
+                    text = {
+                        Column {
+                            TextField(
+                                value = "",
+                                onValueChange = { review.value = it.toInt()},
+                                label = { Text("1-5 (Mandatory)", color = MaterialTheme.colors.onPrimary) },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType =
+                                    KeyboardType.Number
+                                ),
+                                // TODO INPUT text not showing???
+                                colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.onPrimary),
+                                textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
+                            )
+                            TextField(
+                                value = "",
+                                onValueChange = { comment.value = it },
+                                label = { Text("Comment (Voluntary)", color = MaterialTheme.colors.onPrimary) },
+                                // TODO INPUT text not showing???
+                                colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.onPrimary),
+                                textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
+                            )
+                        }
 
+                    },
+                    buttons = {
+                        OutlinedButton(
+                            onClick = {
+                                if(review.value != null) {
+                                    addReview = false
+                                    Log.d("UPDATED", "REVIEW GIVEN ${review.value} ${comment.value}")
+                                    val data = SavedData(date = yesterdayData.date, day = yesterdayData.day, lux = yesterdayData.lux, temp = yesterdayData.temp, noise = yesterdayData.noise, review = review.value, comment = comment.value)
+                                    val gson = Gson()
+                                    val dataJson = gson.toJson(data)
+                                    editor.putString(filteredEntries.firstKey(), dataJson)
+                                    editor.apply()
+                                }else {
+                                    Toast.makeText(applicationContext, "Add review and then press save", Toast.LENGTH_SHORT).show()
+                                    Log.d("UPDATE REVIEW", "UPDATE REVIEW")
+                                }
+                            }
+                        ) {
+                            Text(text = "Save Review & comment", color = MaterialTheme.colors.onPrimary,)
+                        }
+                    }
+                )
+            }
         }
     }
 }
