@@ -27,6 +27,8 @@ import com.jonnesten.lullanap.SavedData
 fun HistoryScreen(sharedPreferences: SharedPreferences) {
     val gson = Gson()
     val allEntries: Map<String, *> = sharedPreferences.all
+    val allEntriesDescending = allEntries.toSortedMap()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,7 +37,7 @@ fun HistoryScreen(sharedPreferences: SharedPreferences) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        for ((key, value) in allEntries) {
+        for ((key, value) in allEntriesDescending) {
             Log.d("SAVED", "key: $key, value: $value")
             if(key != "theme" && key != "notifications" && key != "showInFah"){
                 Log.d("SAVED", "I GOT HERE WITH $key")
@@ -44,7 +46,7 @@ fun HistoryScreen(sharedPreferences: SharedPreferences) {
                 if(jsonData != null) {
                     val data: SavedData = gson.fromJson(jsonData,type);
                     Log.d("SAVED", data.toString());
-                    DayDetails(review= data.review, day = data.day, lux = data.lux, temp = data.temp, noise = data.noise)
+                    DayDetails(review= data.review, day = data.day, lux = data.lux, temp = data.temp, noise = data.noise, comment = data.comment)
                 }
             }
         }
@@ -73,7 +75,14 @@ fun ReviewIcon(review: Int) {
 }
 
 @Composable
-fun DayDetails(review: Int?, day: String, lux: Float?, temp: Float?, noise: Float?) {
+fun DayDetails(
+    review: Int?,
+    day: String,
+    lux: Float?,
+    temp: Float?,
+    noise: Float?,
+    comment: String?
+) {
     // TODO Add correct values for measurements
     Box(
         modifier = Modifier
@@ -87,13 +96,15 @@ fun DayDetails(review: Int?, day: String, lux: Float?, temp: Float?, noise: Floa
                 color = MaterialTheme.colors.onPrimary,
                 fontSize = 26.sp,
             )
-            Text(
-                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Elementum sed sollicitudin sit vulputate.",
-                fontWeight = FontWeight.Light,
-                color = MaterialTheme.colors.onPrimary,
-                fontSize = 18.sp,
-                modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 5.dp)
-            )
+            if (comment != null) {
+                Text(
+                    text = comment,
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 5.dp)
+                )
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
