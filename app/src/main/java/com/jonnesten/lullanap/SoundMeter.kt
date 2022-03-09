@@ -1,6 +1,7 @@
 package com.jonnesten.lullanap
 
 import android.media.MediaRecorder
+import android.util.Log
 import java.io.IOException
 
 
@@ -12,26 +13,32 @@ class SoundMeter() {
 
     fun start() {
         if (mRecorder == null) {
-            mRecorder = MediaRecorder()
-            mRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-            mRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            mRecorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-            mRecorder!!.setOutputFile("/dev/null/")
-            try {
-                mRecorder!!.prepare()
-            } catch (e: IllegalStateException) {
-                e.printStackTrace()
-            } catch (e: IOException) {
-                e.printStackTrace()
+            mRecorder = MediaRecorder().apply {
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+                setAudioEncodingBitRate(16);
+                setAudioSamplingRate(44100);
+                setOutputFile("/dev/null/")
+                try {
+                    prepare()
+                    //Making sure that the code has enough time to prepare the mRecorder
+                    Thread.sleep(1000);
+                    start()
+                    mEMA = 0.0
+                } catch (e: IllegalStateException) {
+                    e.printStackTrace()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
-            mRecorder!!.start()
-            mEMA = 0.0
         }
     }
 
     fun stop() {
         if (mRecorder != null) {
             mRecorder!!.stop()
+            mRecorder!!.reset()
             mRecorder!!.release()
             mRecorder = null
         }
