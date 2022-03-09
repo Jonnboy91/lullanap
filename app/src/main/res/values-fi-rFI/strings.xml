@@ -21,5 +21,7 @@
     <string name="show_in_fahrenheit">Näytä asteet Fahrenheiteissa</string>
     <string name="scanning">Skannataan…</string>
     <string name="scan_again">Skannaa uudelleen</string>
-    <string name="save_data">Tallenna data</string>
+    <string name="save_data">Tallenna</string>
+    <string name="add_temp">Puhelimessasi ei ole lämpötila sensori, syötä huoneen lämpötila manuaalisesti</string>
+    <string name="skip">Ohita</string>
 </resources>

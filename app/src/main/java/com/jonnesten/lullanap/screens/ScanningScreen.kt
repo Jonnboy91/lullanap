@@ -39,7 +39,7 @@ fun ScanningScreen(
 ) {
     var dB: Float? by remember { mutableStateOf(null) }
     var addTemperature by remember { mutableStateOf(false) }
-        val luxScanned = remember { mutableStateOf(false) }
+    val luxScanned = remember { mutableStateOf(false) }
     val luxValue: MutableState<Float?> = remember { mutableStateOf(null) }
     val tempScanned = remember { mutableStateOf(false) }
     val tempValue: MutableState<Float?> = remember { mutableStateOf(null) }
@@ -62,7 +62,7 @@ fun ScanningScreen(
     var dB: Double = 20 * Math.log10(soundMeter.getAmplitude() / 32767);
     Log.d("SoundDB", "value is $dB")*/
 
-    if(lightScanValue != null && !luxScanned.value){
+    if (lightScanValue != null && !luxScanned.value) {
         Handler(Looper.getMainLooper()).postDelayed({
             Log.d("VALUE", "${sensorViewModel.lux.value}")
             luxValue.value = sensorViewModel.lux.value
@@ -70,21 +70,22 @@ fun ScanningScreen(
         }, 1000)
     }
     Handler(Looper.getMainLooper()).postDelayed({
-        if(lightScanValue == null) {
+        if (lightScanValue == null) {
             luxScanned.value = true
         }
-        if(tempScanValue == null && !addTemperature){
+        if (tempScanValue == null && !addTemperature) {
             tempScanned.value = true
         }
-        if(dB == null) {
+        if (dB == null) {
             dbScanned.value = true
-        }}, 5000)
+        }
+    }, 5000)
 
-    if(sensorViewModel.hasTempSensor.value != true && sensorViewModel.temp.value == null){
+    if (sensorViewModel.hasTempSensor.value != true && sensorViewModel.temp.value == null) {
         addTemperature = true
     }
 
-    if(sensorViewModel.temp.value != null && !tempScanned.value){
+    if (sensorViewModel.temp.value != null && !tempScanned.value) {
         Handler(Looper.getMainLooper()).postDelayed({
             Log.d("VALUE", sensorViewModel.temp.value.toString())
             tempValue.value = sensorViewModel.temp.value
@@ -92,7 +93,7 @@ fun ScanningScreen(
         }, 1000)
     }
 
-    if(!dbScanned.value && dB != null){
+    if (!dbScanned.value && dB != null) {
         Handler(Looper.getMainLooper()).postDelayed({
             dbValue.value = dB
             dbValue.value?.let { sensorViewModel.updateDB(it) }
@@ -100,7 +101,7 @@ fun ScanningScreen(
         }, 1000)
     }
 
-    if(dbScanned.value && luxScanned.value && tempScanned.value){
+    if (dbScanned.value && luxScanned.value && tempScanned.value) {
         Handler(Looper.getMainLooper()).postDelayed({
             navController.navigate("results")
         }, 1000)
@@ -244,29 +245,42 @@ fun ScanningScreen(
         }
         // TODO This AlertDialog should pop up only after clicking scanning and you would be on the scanning screen
         if (addTemperature) {
+            val textFieldValue = remember { mutableStateOf("")}
             AlertDialog(
                 onDismissRequest = {
                     Log.d("addTemp", "YOU NEED TO ADD TEMPERATURE")
                 },
-                title = {
-                    Text("No temperature sensor was detected, so add the temperature of the room manually", color = MaterialTheme.colors.onPrimary)
-                },
                 text = {
-                    TextField(
-                        value = "",
-                        onValueChange = { tempValue.value = it.toFloat() },
-                        label = { Text("Label", color = MaterialTheme.colors.onPrimary) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType =
-                            KeyboardType.Number
-                        ),
-                        // TODO INPUT text not showing???
-                        colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.onPrimary),
-                        textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
-                    )
+                    Column {
+                        Text(
+                            stringResource(R.string.add_temp),
+                            color = MaterialTheme.colors.onPrimary,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 18.sp
+                        )
+                        Spacer(modifier = Modifier.padding(10.dp))
+                        TextField(
+                            value = textFieldValue.value,
+                            onValueChange = {
+                                textFieldValue.value = it
+                                tempValue.value = it.toFloat()
+                            },
+                            label = {
+                                Text(
+                                    stringResource(R.string.temperature),
+                                    color = MaterialTheme.colors.onPrimary
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType =
+                                KeyboardType.Number
+                            ),
+                        )
+                    }
                 },
-                buttons = {
-                    OutlinedButton(
+                confirmButton = {
+                    TextButton(
                         onClick = {
                             addTemperature = false
                             val value = tempValue.value
@@ -275,9 +289,32 @@ fun ScanningScreen(
                             }
                         }
                     ) {
-                        Text(text = "Add temp", color = MaterialTheme.colors.onPrimary,)
+                        Text(
+                            stringResource(R.string.save_data),
+                            color = MaterialTheme.colors.secondaryVariant,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
-                }
+                },
+                dismissButton = {
+                    // TODO Change Temp value optional, if user skips, do not show the temp value anywhere
+                    TextButton(
+                        onClick = {
+                            addTemperature = false
+                            val value = tempValue.value
+                            if (value != null) {
+                                sensorViewModel.updateTemp(0.0f)
+                            }
+                        }
+                    ) {
+                        Text(
+                            stringResource(R.string.skip),
+                            color = MaterialTheme.colors.secondaryVariant,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+                backgroundColor = MaterialTheme.colors.primary,
             )
         }
     }
