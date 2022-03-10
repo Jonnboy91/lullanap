@@ -23,4 +23,7 @@
     <string name="save_data">Save</string>
     <string name="add_temp">Your phone does not have temperature sensor, please add temperature of the room manually</string>
     <string name="skip">Skip</string>
+    <string name="add_review">Review last night in scale between 1–5. Comment is optional</string>
+    <string name="scale">1–5</string>
+    <string name="comment">Comment</string>
 </resources>

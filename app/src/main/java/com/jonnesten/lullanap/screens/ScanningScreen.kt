@@ -296,7 +296,6 @@ fun ScanningScreen(
                     }
                 },
                 dismissButton = {
-                    // TODO Change Temp value optional, if user skips, do not show the temp value anywhere
                     TextButton(
                         onClick = {
                             addTemperature = false
