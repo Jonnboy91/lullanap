@@ -300,10 +300,7 @@ fun ScanningScreen(
                     TextButton(
                         onClick = {
                             addTemperature = false
-                            val value = tempValue.value
-                            if (value != null) {
-                                sensorViewModel.updateTemp(0.0f)
-                            }
+                            sensorViewModel.updateTemp(null)
                         }
                     ) {
                         Text(

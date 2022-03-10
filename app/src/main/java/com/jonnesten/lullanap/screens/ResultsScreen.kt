@@ -48,61 +48,70 @@ fun ResultsScreen(navController: NavController, sharedPreferences: SharedPrefere
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Icon(
-            Icons.Outlined.Lightbulb,
-            contentDescription = "Light",
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .size(48.dp),
-            tint = MaterialTheme.colors.onPrimary,
-        )
-        Text(
-            text = lux.toString() + " " + stringResource(R.string.lux),
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 32.dp),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.onPrimary,
-            fontSize = 30.sp
-        )
-        Icon(
-            Icons.Outlined.Thermostat,
-            contentDescription = "Temperature",
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .size(48.dp),
-            tint = MaterialTheme.colors.onPrimary,
-        )
-        Text(
-            text = temp.toString() + " " + stringResource(R.string.celsius),
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 32.dp),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.onPrimary,
-            fontSize = 30.sp
-        )
-        Icon(
-            Icons.Outlined.Speaker,
-            contentDescription = "Noise",
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .size(48.dp),
-            tint = MaterialTheme.colors.onPrimary,
-        )
-        Text(
-            text = dB.toString() + " " + stringResource(R.string.db),
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 32.dp),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.onPrimary,
-            fontSize = 30.sp
-        )
+        if(lux != null){
+            Icon(
+                Icons.Outlined.Lightbulb,
+                contentDescription = "Light",
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .size(48.dp),
+                tint = MaterialTheme.colors.onPrimary,
+            )
+            Text(
+                text = lux.toString() + " " + stringResource(R.string.lux),
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 32.dp),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 30.sp
+            )
+        }
+        // TODO Could have here something saying that it does not have any value, otherwise the screen is really empty
+        if(temp != null){
+            Icon(
+                Icons.Outlined.Thermostat,
+                contentDescription = "Temperature",
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .size(48.dp),
+                tint = MaterialTheme.colors.onPrimary,
+            )
+            Text(
+                text = temp.toString() + " " + stringResource(R.string.celsius),
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 32.dp),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 30.sp
+            )
+        }
+        // TODO Could have here something saying that it does not have any value, otherwise the screen is really empty
 
+        if(dB != null){
+            Icon(
+                Icons.Outlined.Speaker,
+                contentDescription = "Noise",
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .size(48.dp),
+                tint = MaterialTheme.colors.onPrimary,
+            )
+            Text(
+                text = dB.toString() + " " + stringResource(R.string.db),
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 32.dp),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 30.sp
+            )
+        }
+        // TODO Could have here something saying that it does not have any value, otherwise the screen is really empty
         OutlinedButton(
             onClick = {
                 val data = SavedData(date = Date(), day = day, lux = lux, temp = temp, noise = dB, review = null, comment = null)

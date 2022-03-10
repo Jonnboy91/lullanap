@@ -105,66 +105,78 @@ fun DayDetails(
                     modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 5.dp)
                 )
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(0.dp, 2.dp, 0.dp, 2.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(
-                    text = stringResource(R.string.light),
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colors.onPrimary,
-                    fontSize = 18.sp
-                )
-                Text(
-                    // TODO Add correct value before string resource
-                    text = lux.toString() + stringResource(R.string.lux),
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colors.onPrimary,
-                    fontSize = 18.sp
-                )
+            if(lux != null){
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 2.dp, 0.dp, 2.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = stringResource(R.string.light),
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colors.onPrimary,
+                        fontSize = 18.sp
+                    )
+                    Text(
+                        // TODO Add correct value before string resource
+                        text = lux.toString() + stringResource(R.string.lux),
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colors.onPrimary,
+                        fontSize = 18.sp
+                    )
+                }
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(0.dp, 2.dp, 0.dp, 2.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(
-                    text = stringResource(R.string.temperature),
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colors.onPrimary,
-                    fontSize = 18.sp
-                )
-                Text(
-                    // TODO Add correct value before string resource
-                    text = temp.toString() + stringResource(R.string.celsius),
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colors.onPrimary,
-                    fontSize = 18.sp
-                )
+            // TODO Could have here something saying that it does not have any value, otherwise the screen is really empty
+
+            if(temp != null){
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 2.dp, 0.dp, 2.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = stringResource(R.string.temperature),
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colors.onPrimary,
+                        fontSize = 18.sp
+                    )
+                    Text(
+                        // TODO Add correct value before string resource
+                        text = temp.toString() + stringResource(R.string.celsius),
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colors.onPrimary,
+                        fontSize = 18.sp
+                    )
+                }
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(0.dp, 2.dp, 0.dp, 2.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(
-                    text = stringResource(R.string.noise),
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colors.onPrimary,
-                    fontSize = 18.sp
-                )
-                Text(
-                    // TODO Add correct value before string resource
-                    text = noise.toString() + stringResource(R.string.db),
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colors.onPrimary,
-                    fontSize = 18.sp
-                )
+            // TODO Could have here something saying that it does not have any value, otherwise the screen is really empty
+
+            if(noise != null){
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 2.dp, 0.dp, 2.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = stringResource(R.string.noise),
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colors.onPrimary,
+                        fontSize = 18.sp
+                    )
+                    Text(
+                        // TODO Add correct value before string resource
+                        text = noise.toString() + stringResource(R.string.db),
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colors.onPrimary,
+                        fontSize = 18.sp
+                    )
+                }
             }
+            // TODO Could have here something saying that it does not have any value, otherwise the screen is really empty
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -174,7 +186,7 @@ fun DayDetails(
                 if (review != null) {
                     ReviewIcon(review)
                 } else {
-                    Text("No review yet, review tomorrow morning")
+                    Text("No review yet, review tomorrow morning", color = MaterialTheme.colors.onPrimary)
                 }
             }
         }
