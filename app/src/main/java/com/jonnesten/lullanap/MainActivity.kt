@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.google.gson.Gson
@@ -53,7 +54,6 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
 
 
 
@@ -157,118 +157,110 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                 contentDescription = "Background Image",
                 contentScale = ContentScale.FillBounds
             )
-            val navController = rememberNavController()
-            Scaffold(
-                backgroundColor = Color.Transparent,
-                bottomBar = {
-                    BottomNavigation(navController = navController)
-                    // TODO Get current height of a navigation bar and use it as Spacer bottom padding
-                    val navHeight = applicationContext.resources.getIdentifier(
-                        "navigation_bar_height",
-                        "dimen",
-                        "android"
-                    )
-                    Log.d("test", navHeight.toString())
-                    Spacer(Modifier.padding(0.dp, 50.dp))
+        }
+        val navController = rememberNavController()
+        Scaffold(
+            backgroundColor = Color.Transparent,
+            bottomBar = {
+                BottomNavigation(navController = navController)
+            },
+        ) {
+            NavigationGraph(
+                navController = navController,
+                sensorViewModel = sensorViewModel,
+                sharedPreferences = sharedPreferences
+            )
+        }
+        if (addReview) {
+            AlertDialog(
+                onDismissRequest = {
+                    Log.d("addReview", "YOU NEED TO ADD REVIEW")
+                    Toast.makeText(
+                        applicationContext,
+                        "Add review and press save review",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 },
-            ) {
-                NavigationGraph(
-                    navController = navController,
-                    sensorViewModel = sensorViewModel,
-                    sharedPreferences = sharedPreferences
-                )
-            }
-            if (addReview) {
-                AlertDialog(
-                    onDismissRequest = {
-                        Log.d("addReview", "YOU NEED TO ADD REVIEW")
-                        Toast.makeText(
-                            applicationContext,
-                            "Add review and press save review",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    },
-                    text = {
-                        Column {
-                            Text(
-                                stringResource(R.string.add_review),
-                                color = MaterialTheme.colors.onPrimary,
-                                textAlign = TextAlign.Center
-                            )
-                            Spacer(modifier = Modifier.height(15.dp))
-                            TextField(
-                                value = if (review.value === null) "" else review.value.toString(),
-                                onValueChange = { review.value = it.toInt() },
-                                label = {
-                                    Text(
-                                        stringResource(R.string.scale),
-                                        color = MaterialTheme.colors.onPrimary
-                                    )
-                                },
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType =
-                                    KeyboardType.Number
-                                ),
-                                colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.onPrimary),
-                                textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
-                            )
-                            Spacer(modifier = Modifier.height(5.dp))
-                            TextField(
-                                value = if (comment.value === null) "" else comment.value.toString(),
-                                onValueChange = { comment.value = it },
-                                label = {
-                                    Text(
-                                        stringResource(R.string.comment),
-                                        color = MaterialTheme.colors.onPrimary
-                                    )
-                                },
-                                colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.onPrimary),
-                                textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
-                            )
-                        }
+                text = {
+                    Column {
+                        Text(
+                            stringResource(R.string.add_review),
+                            color = MaterialTheme.colors.onPrimary,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(15.dp))
+                        TextField(
+                            value = if (review.value === null) "" else review.value.toString(),
+                            onValueChange = { if (it == "") review.value = null else review.value = it.toInt() },
+                            label = {
+                                Text(
+                                    stringResource(R.string.scale),
+                                    color = MaterialTheme.colors.onPrimary
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType =
+                                KeyboardType.Number
+                            ),
+                            colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.onPrimary),
+                            textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
+                        )
+                        Spacer(modifier = Modifier.height(5.dp))
+                        TextField(
+                            value = if (comment.value === null) "" else comment.value.toString(),
+                            onValueChange = { comment.value = it },
+                            label = {
+                                Text(
+                                    stringResource(R.string.comment),
+                                    color = MaterialTheme.colors.onPrimary
+                                )
+                            },
+                            colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.onPrimary),
+                            textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
+                        )
+                    }
 
-                    },
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                                if (review.value != null) {
-                                    addReview = false
-                                    Log.d(
-                                        "UPDATED",
-                                        "REVIEW GIVEN ${review.value} ${comment.value}"
-                                    )
-                                    val data = SavedData(
-                                        date = yesterdayData.date,
-                                        day = yesterdayData.day,
-                                        lux = yesterdayData.lux,
-                                        temp = yesterdayData.temp,
-                                        noise = yesterdayData.noise,
-                                        review = review.value,
-                                        comment = comment.value
-                                    )
-                                    val gson = Gson()
-                                    val dataJson = gson.toJson(data)
-                                    editor.putString(filteredEntries.firstKey(), dataJson)
-                                    editor.apply()
-                                } else {
-                                    Toast.makeText(
-                                        applicationContext,
-                                        "Add review and then press save",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    Log.d("UPDATE REVIEW", "UPDATE REVIEW")
-                                }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            if (review.value != null) {
+                                addReview = false
+                                Log.d(
+                                    "UPDATED",
+                                    "REVIEW GIVEN ${review.value} ${comment.value}"
+                                )
+                                val data = SavedData(
+                                    date = yesterdayData.date,
+                                    day = yesterdayData.day,
+                                    lux = yesterdayData.lux,
+                                    temp = yesterdayData.temp,
+                                    noise = yesterdayData.noise,
+                                    review = review.value,
+                                    comment = comment.value
+                                )
+                                val gson = Gson()
+                                val dataJson = gson.toJson(data)
+                                editor.putString(filteredEntries.firstKey(), dataJson)
+                                editor.apply()
+                            } else {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Add review and then press save",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                Log.d("UPDATE REVIEW", "UPDATE REVIEW")
                             }
-                        ) {
-                            Text(
-                                stringResource(R.string.save_data),
-                                color = MaterialTheme.colors.secondaryVariant,
-                                fontWeight = FontWeight.Bold
-                            )
                         }
-                    },
-                )
-            }
+                    ) {
+                        Text(
+                            stringResource(R.string.save_data),
+                            color = MaterialTheme.colors.secondaryVariant,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+            )
         }
     }
 }
