@@ -112,26 +112,40 @@ fun ResultsScreen(navController: NavController, sharedPreferences: SharedPrefere
             )
         }
         // TODO Could have here something saying that it does not have any value, otherwise the screen is really empty
-        OutlinedButton(
-            onClick = {
-                val data = SavedData(date = Date(), day = day, lux = lux, temp = temp, noise = dB, review = null, comment = null)
-                val gson = Gson()
-                val dataJson = gson.toJson(data)
-                editor.putString(date, dataJson)
-                editor.apply()
-                navController.navigate("history")
-            }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = stringResource(R.string.save_data), color = MaterialTheme.colors.onPrimary,)
-        }
-
-        OutlinedButton(
-            onClick = {
-                navController.navigate("scanning")
+            TextButton(
+                onClick = {
+                    navController.navigate("scanning")
+                }
+            ) {
+                Text(
+                    text = stringResource(R.string.scan_again),
+                    color = MaterialTheme.colors.secondaryVariant,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
+                )
             }
-        ) {
-            Text(text = stringResource(R.string.scan_again), color = MaterialTheme.colors.onPrimary,)
+            TextButton(
+                onClick = {
+                    val data = SavedData(date = Date(), day = day, lux = lux, temp = temp, noise = dB, review = null, comment = null)
+                    val gson = Gson()
+                    val dataJson = gson.toJson(data)
+                    editor.putString(date, dataJson)
+                    editor.apply()
+                    navController.navigate("history")
+                }
+            ) {
+                Text(
+                    text = stringResource(R.string.save_data),
+                    color = MaterialTheme.colors.secondaryVariant,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
+                )
+            }
         }
-
     }
 }

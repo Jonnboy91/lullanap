@@ -20,10 +20,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.D
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
@@ -39,7 +43,7 @@ import java.util.*
 
 class MainActivity : ComponentActivity(), SensorEventListener {
 
-    companion object{
+    companion object {
         private lateinit var sm: SensorManager
         private var sTemp: Sensor? = null
         private var sLight: Sensor? = null
@@ -104,7 +108,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         event ?: return
         val buttonIsClicked = sensorViewModel.clicked.value
         // && buttonIsClicked == true Right now everything is working as should, except that if for some reason the light or temp wouldn't change during the scanning even a bit, then the onSensorChanged wouldn't be read and thus no value for the user. Option is to just not think when user is getting the scan, but to keep saving the values to list and just use the latest one from there.
-        if (event.sensor == sTemp ) {
+        if (event.sensor == sTemp) {
             Log.d("onSensorChangedTemp", "On sensorChanged, $event: ${event.values[0]}")
             sensorViewModel.updateTemp(event.values[0])
         }
@@ -129,14 +133,16 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         val allEntries: Map<String, *> = sharedPreferences.all
         val gson = Gson()
 
-        val filteredEntries = allEntries.filter { it.key != "theme" && it.key != "notifications" && it.key != "showInFah" }.toSortedMap()
+        val filteredEntries =
+            allEntries.filter { it.key != "theme" && it.key != "notifications" && it.key != "showInFah" }
+                .toSortedMap()
 
-        if(!filteredEntries.isEmpty()){
+        if (!filteredEntries.isEmpty()) {
             val jsonData = sharedPreferences.getString(filteredEntries.firstKey(), null)
             val type = object : TypeToken<SavedData>() {}.type
-            if(jsonData != null) {
+            if (jsonData != null) {
                 yesterdayData = gson.fromJson(jsonData, type);
-                if(isYesterday(date = yesterdayData.date) && yesterdayData.review == null){
+                if (isYesterday(date = yesterdayData.date) && yesterdayData.review == null) {
                     Log.d("ASK FOR REVIEW", "NEED TO REVIEW")
                     addReview = true;
                 }
@@ -157,7 +163,11 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                 bottomBar = {
                     BottomNavigation(navController = navController)
                     // TODO Get current height of a navigation bar and use it as Spacer bottom padding
-                    val navHeight = applicationContext.resources.getIdentifier("navigation_bar_height", "dimen", "android")
+                    val navHeight = applicationContext.resources.getIdentifier(
+                        "navigation_bar_height",
+                        "dimen",
+                        "android"
+                    )
                     Log.d("test", navHeight.toString())
                     Spacer(Modifier.padding(0.dp, 50.dp))
                 },
@@ -172,56 +182,91 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                 AlertDialog(
                     onDismissRequest = {
                         Log.d("addReview", "YOU NEED TO ADD REVIEW")
-                        Toast.makeText(applicationContext, "Add review and press save review", Toast.LENGTH_SHORT).show()
-                    },
-                    title = {
-                        Text("Add yesterdays review (1-5) and a comment if you want to", color = MaterialTheme.colors.onPrimary)
+                        Toast.makeText(
+                            applicationContext,
+                            "Add review and press save review",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     },
                     text = {
                         Column {
+                            Text(
+                                stringResource(R.string.add_review),
+                                color = MaterialTheme.colors.onPrimary,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.height(15.dp))
                             TextField(
-                                value = "",
-                                onValueChange = { review.value = it.toInt()},
-                                label = { Text("1-5 (Mandatory)", color = MaterialTheme.colors.onPrimary) },
+                                value = if (review.value === null) "" else review.value.toString(),
+                                onValueChange = { review.value = it.toInt() },
+                                label = {
+                                    Text(
+                                        stringResource(R.string.scale),
+                                        color = MaterialTheme.colors.onPrimary
+                                    )
+                                },
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType =
                                     KeyboardType.Number
                                 ),
-                                // TODO INPUT text not showing???
                                 colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.onPrimary),
                                 textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
                             )
+                            Spacer(modifier = Modifier.height(5.dp))
                             TextField(
-                                value = "",
+                                value = if (comment.value === null) "" else comment.value.toString(),
                                 onValueChange = { comment.value = it },
-                                label = { Text("Comment (Voluntary)", color = MaterialTheme.colors.onPrimary) },
-                                // TODO INPUT text not showing???
+                                label = {
+                                    Text(
+                                        stringResource(R.string.comment),
+                                        color = MaterialTheme.colors.onPrimary
+                                    )
+                                },
                                 colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.onPrimary),
                                 textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
                             )
                         }
 
                     },
-                    buttons = {
-                        OutlinedButton(
+                    confirmButton = {
+                        TextButton(
                             onClick = {
-                                if(review.value != null) {
+                                if (review.value != null) {
                                     addReview = false
-                                    Log.d("UPDATED", "REVIEW GIVEN ${review.value} ${comment.value}")
-                                    val data = SavedData(date = yesterdayData.date, day = yesterdayData.day, lux = yesterdayData.lux, temp = yesterdayData.temp, noise = yesterdayData.noise, review = review.value, comment = comment.value)
+                                    Log.d(
+                                        "UPDATED",
+                                        "REVIEW GIVEN ${review.value} ${comment.value}"
+                                    )
+                                    val data = SavedData(
+                                        date = yesterdayData.date,
+                                        day = yesterdayData.day,
+                                        lux = yesterdayData.lux,
+                                        temp = yesterdayData.temp,
+                                        noise = yesterdayData.noise,
+                                        review = review.value,
+                                        comment = comment.value
+                                    )
                                     val gson = Gson()
                                     val dataJson = gson.toJson(data)
                                     editor.putString(filteredEntries.firstKey(), dataJson)
                                     editor.apply()
-                                }else {
-                                    Toast.makeText(applicationContext, "Add review and then press save", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "Add review and then press save",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                     Log.d("UPDATE REVIEW", "UPDATE REVIEW")
                                 }
                             }
                         ) {
-                            Text(text = "Save Review & comment", color = MaterialTheme.colors.onPrimary,)
+                            Text(
+                                stringResource(R.string.save_data),
+                                color = MaterialTheme.colors.secondaryVariant,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
-                    }
+                    },
                 )
             }
         }
