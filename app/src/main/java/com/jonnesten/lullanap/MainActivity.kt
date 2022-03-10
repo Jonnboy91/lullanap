@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         }
 
         if (sLight != null) {
-            sm.registerListener(this, sTemp, SensorManager.SENSOR_DELAY_UI)
+            sm.registerListener(this, sLight, SensorManager.SENSOR_DELAY_UI)
         }
     }
 
@@ -131,13 +131,15 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
         val filteredEntries = allEntries.filter { it.key != "theme" && it.key != "notifications" && it.key != "showInFah" }.toSortedMap()
 
-        val jsonData = sharedPreferences.getString(filteredEntries.firstKey(), null)
-        val type = object : TypeToken<SavedData>() {}.type
-        if(jsonData != null) {
-            yesterdayData = gson.fromJson(jsonData, type);
-            if(!isYesterday(date = yesterdayData.date) && yesterdayData.review == null){
-                Log.d("ASK FOR REVIEW", "NEED TO REVIEW")
-                addReview = true;
+        if(!filteredEntries.isEmpty()){
+            val jsonData = sharedPreferences.getString(filteredEntries.firstKey(), null)
+            val type = object : TypeToken<SavedData>() {}.type
+            if(jsonData != null) {
+                yesterdayData = gson.fromJson(jsonData, type);
+                if(isYesterday(date = yesterdayData.date) && yesterdayData.review == null){
+                    Log.d("ASK FOR REVIEW", "NEED TO REVIEW")
+                    addReview = true;
+                }
             }
         }
 
