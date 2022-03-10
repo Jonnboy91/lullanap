@@ -20,5 +20,7 @@
     <string name="show_in_fahrenheit">Show in Fahrenheit</string>
     <string name="scanning">Scanning…</string>
     <string name="scan_again">Scan again</string>
-    <string name="save_data">Save data</string>
+    <string name="save_data">Save</string>
+    <string name="add_temp">Your phone does not have temperature sensor, please add temperature of the room manually</string>
+    <string name="skip">Skip</string>
 </resources>

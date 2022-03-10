@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -50,7 +51,10 @@ fun HomeScreen(
             },
             border = BorderStroke(5.dp, MaterialTheme.colors.secondary),
             shape = CircleShape,
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.secondary),
+            colors = ButtonDefaults.outlinedButtonColors(
+                backgroundColor = MaterialTheme.colors.primary
+            ),
+            elevation = ButtonDefaults.elevation(10.dp),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .width(200.dp)
@@ -58,7 +62,7 @@ fun HomeScreen(
         ) {
             Text(
                 text = stringResource(R.string.scan_button),
-                color = MaterialTheme.colors.onPrimary,
+                color = MaterialTheme.colors.secondary,
                 fontWeight = FontWeight.Medium,
                 fontSize = 20.sp
             )
